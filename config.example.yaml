@@ -1,0 +1,26 @@
+models:
+  kimi-k2.6:
+    clone_from: gpt-5.4-mini
+    display_name: Kimi K2.6
+    description: Kimi K2.6 routed through a configured upstream endpoint.
+    priority: 100
+    supported_in_api: true
+    visibility: list
+    model_provider: moonshot
+
+    target_url: https://api.moonshot.ai/v1/responses
+    target_model: kimi-k2.6
+    bearer_token_env: MOONSHOT_API_KEY
+    headers:
+      x-codex-model-tap: "1"
+
+  # Existing ChatGPT catalog model: update how it looks and route it to Kimi.
+  gpt-5.4-mini:
+    display_name: GPT-5.4 Mini -> Kimi K2.6
+    description: Existing catalog model overridden locally and routed to Kimi K2.6.
+
+    target_url: https://api.moonshot.ai/v1/responses
+    target_model: kimi-k2.6
+    bearer_token_env: MOONSHOT_API_KEY
+    headers:
+      x-codex-model-tap: "1"
