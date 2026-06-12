@@ -8,21 +8,12 @@ from mitmproxy import ctx, http
 
 from codex_model_tap.catalog import patch_model_catalog
 from codex_model_tap.config import (
-    CHATGPT_HOST,
-    MODELS_PATH,
-    RESPONSES_PATH,
-    STRIPPED_CHATGPT_HEADERS,
-    WEBSOCKET_BLOCK_BODY,
-    WEBSOCKET_BLOCK_HEADERS,
-    WEBSOCKET_BLOCK_REASON,
-    WEBSOCKET_BLOCK_STATUS_CODE,
     AppConfig,
     load_config,
 )
 from codex_model_tap.routing import RoutedRequest, is_websocket_upgrade, route_responses_request
 
-
-class CodexMitm55:
+class CodexModelTap:
     def __init__(self) -> None:
         self.config: AppConfig | None = None
 
@@ -41,7 +32,7 @@ class CodexMitm55:
 
     def request(self, flow: http.HTTPFlow) -> None:
         config = self.config
-        if not config or not self._is_chatgpt_path(flow, RESPONSES_PATH):
+        if not config or not self._is_chatgpt_path(flow, "/backend-api/codex/responses"):
             return
 
         if is_websocket_upgrade(flow.request.headers):
@@ -62,7 +53,7 @@ class CodexMitm55:
 
     def response(self, flow: http.HTTPFlow) -> None:
         config = self.config
-        if not config or not self._is_chatgpt_path(flow, MODELS_PATH):
+        if not config or not self._is_chatgpt_path(flow, "/backend-api/codex/models"):
             return
 
         content_type = flow.response.headers.get("content-type", "")
@@ -80,7 +71,8 @@ class CodexMitm55:
             ctx.log.warn(f"codex-model-tap could not patch model catalog: {exc}")
 
     def _is_chatgpt_path(self, flow: http.HTTPFlow, path: str) -> bool:
-        return flow.request.host == CHATGPT_HOST and flow.request.path.split("?", 1)[0] == path
+        host = flow.request.pretty_host or flow.request.host
+        return host == "chatgpt.com" and flow.request.path.split("?", 1)[0] == path
 
     def _apply_route(self, flow: http.HTTPFlow, routed: RoutedRequest) -> None:
         route = routed.route
@@ -99,7 +91,14 @@ class CodexMitm55:
         self._apply_upstream_body_compat(flow, routed.body)
 
         if route.strip_chatgpt_headers:
-            for header in STRIPPED_CHATGPT_HEADERS:
+            for header in (
+                "authorization",
+                "cookie",
+                "chatgpt-account-id",
+                "x-oai-attestation",
+                "x-openai-fedramp",
+                "x-openai-internal-codex-responses-lite",
+            ):
                 flow.request.headers.pop(header, None)
 
         if route.bearer_token_env:
@@ -123,11 +122,14 @@ class CodexMitm55:
 
     def _block_websocket_upgrade(self, flow: http.HTTPFlow) -> None:
         flow.response = http.Response.make(
-            WEBSOCKET_BLOCK_STATUS_CODE,
-            WEBSOCKET_BLOCK_BODY.encode("utf-8"),
-            WEBSOCKET_BLOCK_HEADERS,
+            426,
+            "WebSocket upgrade is not available at this moment.\n".encode("utf-8"),
+            {
+                "content-type": "text/plain; charset=utf-8",
+                "x-codex-model-tap-websocket-blocked": "1",
+            },
         )
-        flow.response.reason = WEBSOCKET_BLOCK_REASON
+        flow.response.reason = "OK"
 
 
-addons = [CodexMitm55()]
+addons = [CodexModelTap()]

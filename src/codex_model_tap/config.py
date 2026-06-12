@@ -6,24 +6,8 @@ from typing import Any
 
 import yaml
 
-CHATGPT_HOST = "chatgpt.com"
-MODELS_PATH = "/backend-api/codex/models"
-RESPONSES_PATH = "/backend-api/codex/responses"
 LISTEN_HOST = "127.0.0.1"
 LISTEN_PORT = 8080
-WEBSOCKET_BLOCK_STATUS_CODE = 200
-WEBSOCKET_BLOCK_REASON = "OK"
-WEBSOCKET_BLOCK_BODY = "WebSocket upgrade is not available through this proxy.\n"
-WEBSOCKET_BLOCK_HEADERS = {
-    "content-type": "text/plain; charset=utf-8",
-    "x-codex-model-tap-websocket-blocked": "1",
-}
-STRIPPED_CHATGPT_HEADERS = (
-    "cookie",
-    "chatgpt-account-id",
-    "oai-device-id",
-    "openai-sentinel-chat-requirements-token",
-)
 
 
 @dataclass(frozen=True)

@@ -3,7 +3,7 @@ name = "codex-model-tap"
 version = "0.1.0"
 description = "mitmproxy addon for selectively rerouting Codex ChatGPT traffic"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.12"
 dependencies = [
   "mitmproxy>=12.0.0,<13.0.0",
   "pyyaml>=6.0.1",

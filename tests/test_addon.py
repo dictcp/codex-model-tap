@@ -5,7 +5,7 @@ from mitmproxy import ctx
 from mitmproxy import http
 import zstandard
 
-from codex_model_tap.addon import CodexMitm55
+from codex_model_tap.addon import CodexModelTap
 from codex_model_tap.config import AppConfig, ResponseRoute
 
 
@@ -24,7 +24,7 @@ def test_apply_upstream_body_compat_forces_plain_json_bytes():
     )
 
     body = b'{"model":"kimi-k2.6"}'
-    CodexMitm55()._apply_upstream_body_compat(flow, body)
+    CodexModelTap()._apply_upstream_body_compat(flow, body)
 
     assert flow.request.raw_content == body
     assert flow.request.headers["content-type"] == "application/json"
@@ -50,7 +50,7 @@ def test_request_reroute_never_forwards_zstd_body(monkeypatch):
     )
     flow.request.raw_content = compressed_body
 
-    addon = CodexMitm55()
+    addon = CodexModelTap()
     addon.config = AppConfig(
         response_routes=(
             ResponseRoute(

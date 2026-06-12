@@ -1,6 +1,8 @@
 # codex-model-tap
 
-Local mitmproxy addon for selectively intercepting Codex traffic to `chatgpt.com`.
+<img src="./preview.jpg" alt="Preview" width="600">
+
+Local mitmproxy addon for selectively intercepting Codex traffic to `chatgpt.com`, to allow local model overrides.
 
 It does two things and leaves other traffic alone:
 
@@ -11,38 +13,34 @@ It does two things and leaves other traffic alone:
 ## Setup
 
 ```bash
-cd /home/dick/workspaces/codex-model-tap
-mise install
-mise exec -- python -m venv .venv
+# require Python 3.12+ for mitiproxy 12
+python3 -m venv .venv
 . .venv/bin/activate
 pip install -e '.[dev]'
 cp config.example.yaml config.yaml
-```
-
-Set the upstream token if your config uses `bearer_token_env`:
-
-```bash
-export MOONSHOT_API_KEY=...
+# edit config.yaml as needed
 ```
 
 ## Run
 
-Local Capture requires elevated privileges on most systems. This project targets mitmproxy 12 because it supports app-level Local Capture on Linux. The common form is:
+Install/trust the mitmproxy CA for the user or system that runs Codex and run:
+
+```bash
+sudo .venv/bin/codex-model-tap --config $PWD/config.yaml --local codex
+```
+The helper script will run in Local Capture mode, which requires less setup on codex.
+
+### Local Capture
+Local Capture requires elevated privileges on most systems. This project targets mitmproxy 12 because it supports app-level Local Capture on Linux & macOS. The common form is:
 
 ```bash
 sudo .venv/bin/mitmdump \
   --mode local:codex \
   -s src/codex_model_tap/addon.py \
-  --set codex_mitm_config=/home/dick/workspaces/codex-model-tap/config.yaml
+  --set codex_mitm_config=$PWD/config.yaml
 ```
 
-Or use the helper, which execs mitmdump with the same addon:
-
-```bash
-sudo .venv/bin/codex-model-tap --config /home/dick/workspaces/codex-model-tap/config.yaml --local codex
-```
-
-Normal HTTP proxy mode:
+### HTTP proxy mode
 
 ```bash
 .venv/bin/mitmdump \
@@ -50,7 +48,7 @@ Normal HTTP proxy mode:
   --listen-host 127.0.0.1 \
   --listen-port 8080 \
   -s src/codex_model_tap/addon.py \
-  --set codex_mitm_config=/home/dick/workspaces/codex-model-tap/config.yaml
+  --set codex_mitm_config=$PWD/config.yaml
 ```
 
 Point a process at regular proxy mode with:
@@ -58,8 +56,6 @@ Point a process at regular proxy mode with:
 ```bash
 HTTPS_PROXY=http://127.0.0.1:8080 HTTP_PROXY=http://127.0.0.1:8080 codex
 ```
-
-Install/trust the mitmproxy CA for the user or system that runs Codex. You said root/CA override is acceptable, so this repo assumes certificate setup is handled outside the addon.
 
 ## Config Shape
 
