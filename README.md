@@ -78,3 +78,8 @@ I need a mitm-based layer because it lets me intercept Codex traffic without cha
 ## Reference
 - https://localai.io/features/mitm-proxy/index.html
 - https://docs.mitmproxy.org/stable/concepts/modes/#local-capture
+- https://github.com/BigPizzaV3/CodexPlusPlus
+- https://github.com/Soju06/codex-lb
+- https://docs.ollama.com/integrations/codex-app
+- https://developers.openai.com/codex/config-advanced
+- https://github.com/Dailin521/codex-provider-sync
