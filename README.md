@@ -72,11 +72,8 @@ ChatGPT host/path matching, WebSocket upgrade blocking, stripped ChatGPT headers
 
 The upstream endpoint must accept the Codex responses payload shape you forward. If the upstream is OpenAI-compatible but not byte-for-byte compatible, add a transformer before forwarding.
 
-## Tests
-
-```bash
-pytest
-```
+## Background
+I need a mitm-based layer because it lets me intercept Codex traffic without changing the client itself, so I can keep a clean “no history loss” provider-switch approach used by others (eg. ollama, cc-switch). That means I can route the same Codex session between my own provider and ChatGPT Codex as needed, while preserving the existing conversation state and request flow. In local capture mode, it also avoids restarting the Codex session when I change routing, which keeps the workflow fast and continuous.
 
 ## Reference
 - https://localai.io/features/mitm-proxy/index.html
