@@ -77,3 +77,7 @@ The upstream endpoint must accept the Codex responses payload shape you forward.
 ```bash
 pytest
 ```
+
+## Reference
+- https://localai.io/features/mitm-proxy/index.html
+- https://docs.mitmproxy.org/stable/concepts/modes/#local-capture
