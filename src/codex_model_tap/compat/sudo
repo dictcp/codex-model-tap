@@ -1,0 +1,12 @@
+#!/bin/bash
+# mitmproxy passes --preserve-env to sudo and treats redirector stderr as an
+# error. The uutils sudo shipped on some hosts warns that this option is not
+# supported even though the privileged command still succeeds.
+args=()
+for arg in "$@"; do
+    case "$arg" in
+        --preserve-env|--preserve-env=*) ;;
+        *) args+=("$arg") ;;
+    esac
+done
+exec /usr/bin/sudo "${args[@]}"

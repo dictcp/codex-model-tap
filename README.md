@@ -31,13 +31,12 @@ sudo .venv/bin/codex-model-tap --config $PWD/config.yaml --local codex
 The helper script will run in Local Capture mode, which requires less setup on codex.
 
 ### Local Capture
-Local Capture requires elevated privileges on most systems. This project targets mitmproxy 12 because it supports app-level Local Capture on Linux & macOS. The common form is:
+Local Capture requires elevated privileges on most systems. This project targets mitmproxy 12 because it supports app-level Local Capture on Linux & macOS. Use the project helper so it selects the matching mitmdump runtime and applies the Linux local-capture compatibility setup:
 
 ```bash
-sudo .venv/bin/mitmdump \
-  --mode local:codex \
-  -s src/codex_model_tap/addon.py \
-  --set codex_mitm_config=$PWD/config.yaml
+sudo .venv/bin/codex-model-tap \
+  --config $PWD/config.yaml \
+  --local codex
 ```
 
 ### HTTP proxy mode
