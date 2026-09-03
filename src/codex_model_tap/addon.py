@@ -12,6 +12,8 @@ from codex_model_tap.config import (
     load_config,
 )
 from codex_model_tap.routing import RoutedRequest, is_websocket_upgrade, route_responses_request
+from codex_model_tap.linux_pid_control import addons as linux_pid_control_addons
+
 
 class CodexModelTap:
     def __init__(self) -> None:
@@ -132,4 +134,4 @@ class CodexModelTap:
         flow.response.reason = "OK"
 
 
-addons = [CodexModelTap()]
+addons = [CodexModelTap(), *linux_pid_control_addons]

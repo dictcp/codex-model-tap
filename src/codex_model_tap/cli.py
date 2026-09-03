@@ -16,6 +16,16 @@ def main() -> None:
     parser.add_argument("--listen-port", default=None, help="mitmproxy listen port override.")
     parser.add_argument("--mode", default=None, help="Full mitmproxy mode value. Defaults to local:<--local>.")
     parser.add_argument("--local", default="codex", help="mitmproxy local capture selector used when --mode is omitted.")
+    parser.add_argument(
+        "--local-pid-file",
+        default=None,
+        help="Linux-only file containing the PID to select for local capture.",
+    )
+    parser.add_argument(
+        "--local-control-socket",
+        default=None,
+        help="Linux-only Unix socket accepting target PIDs for local capture.",
+    )
     args = parser.parse_args()
     mode = args.mode or f"local:{args.local}"
 
@@ -46,6 +56,11 @@ def main() -> None:
         "--set",
         f"codex_mitm_config={args.config}",
     ]
+
+    if args.local_pid_file:
+        argv.extend(["--set", f"codex_local_pid_file={args.local_pid_file}"])
+    if args.local_control_socket:
+        argv.extend(["--set", f"codex_local_control_socket={args.local_control_socket}"])
 
     argv.extend(["--listen-host", args.listen_host or LISTEN_HOST])
     argv.extend(["--listen-port", args.listen_port or str(LISTEN_PORT)])

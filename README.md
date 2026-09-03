@@ -39,6 +39,32 @@ sudo .venv/bin/codex-model-tap \
   --local codex
 ```
 
+### Dynamic Linux PID target
+
+Linux local capture can be retargeted while the proxy is running. The optional
+controller module watches a PID file and/or accepts one PID per Unix-socket
+connection. This is useful when Codex restarts and receives a new PID:
+
+```bash
+sudo .venv/bin/codex-model-tap \
+  --config $PWD/config.yaml \
+  --local codex \
+  --local-pid-file /tmp/codex-model-tap.pid \
+  --local-control-socket /tmp/codex-model-tap.sock
+```
+
+Update either control path with the new Codex PID. The socket is created with
+mode `0600`, so a proxy started with `sudo` needs `sudo` for socket writes:
+
+```bash
+printf '%s\n' "$CODEX_PID" > /tmp/codex-model-tap.pid
+printf '%s\n' "$CODEX_PID" | sudo socat - UNIX-CONNECT:/tmp/codex-model-tap.sock
+```
+
+The controller is Linux-only and only changes an existing `local` mode. It
+tracks one PID at a time and does not follow forked child processes
+automatically; use process-name/local-all capture when the child set matters.
+
 ### HTTP proxy mode
 
 ```bash
