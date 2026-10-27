@@ -18,7 +18,7 @@ dev = [
 codex-model-tap = "codex_model_tap.cli:main"
 
 [build-system]
-requires = ["hatchling>=1.32.4"]
+requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.pytest.ini_options]
