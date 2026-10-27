@@ -1,5 +1,7 @@
 # codex-model-tap
 
+> **Deprecated:** Development has stopped, and this project will not receive further updates or maintenance. If you want to use a ChatGPT subscription alongside third-party models in Codex, consider configuring `openai_base_url` with [Magpie](https://usemagpie.ai/) or exploring the [Ollama desktop app's Codex integration](https://docs.ollama.com/integrations/codex-app).
+
 <img src="./preview.jpg" alt="Preview" width="600">
 
 Local mitmproxy addon for selectively intercepting Codex traffic to `chatgpt.com`, to allow local model overrides.
