@@ -5,20 +5,20 @@ description = "mitmproxy addon for selectively rerouting Codex ChatGPT traffic"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-  "mitmproxy>=12.0.0,<13.0.0",
-  "pyyaml>=6.0.1",
+  "mitmproxy>=12.3.1,<13.0.0",
+  "pyyaml>=6.0.3",
 ]
 
 [project.optional-dependencies]
 dev = [
-  "pytest>=8.0.0",
+  "pytest>=8.4.2",
 ]
 
 [project.scripts]
 codex-model-tap = "codex_model_tap.cli:main"
 
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling>=1.32.4"]
 build-backend = "hatchling.build"
 
 [tool.pytest.ini_options]
