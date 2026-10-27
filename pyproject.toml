@@ -5,13 +5,13 @@ description = "mitmproxy addon for selectively rerouting Codex ChatGPT traffic"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-  "mitmproxy>=12.0.0,<13.0.0",
-  "pyyaml>=6.0.1",
+  "mitmproxy>=12.3.1,<13.0.0",
+  "pyyaml>=6.0.3",
 ]
 
 [project.optional-dependencies]
 dev = [
-  "pytest>=8.0.0",
+  "pytest>=9.1.1",
 ]
 
 [project.scripts]

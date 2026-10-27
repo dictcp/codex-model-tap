@@ -3,7 +3,6 @@ from types import SimpleNamespace
 
 from mitmproxy import ctx
 from mitmproxy import http
-import zstandard
 
 from codex_model_tap.addon import CodexModelTap
 from codex_model_tap.config import AppConfig, ResponseRoute
@@ -36,19 +35,17 @@ def test_apply_upstream_body_compat_forces_plain_json_bytes():
 def test_request_reroute_never_forwards_zstd_body(monkeypatch):
     monkeypatch.setattr(ctx, "log", SimpleNamespace(info=lambda *_args, **_kwargs: None), raising=False)
     body = json.dumps({"model": "gpt-5.4-mini", "input": "hi"}).encode()
-    compressed_body = zstandard.ZstdCompressor().compress(body)
     flow = http.HTTPFlow(None, None)
     flow.request = http.Request.make(
         "POST",
         "https://chatgpt.com/backend-api/codex/responses",
-        content=b"",
+        content=body,
         headers={
             "content-type": "application/json",
-            "content-encoding": "zstd",
-            "content-length": str(len(compressed_body)),
         },
     )
-    flow.request.raw_content = compressed_body
+    flow.request.encode("zstd")
+    assert flow.request.raw_content.startswith(b"\x28\xb5\x2f\xfd")
 
     addon = CodexModelTap()
     addon.config = AppConfig(
